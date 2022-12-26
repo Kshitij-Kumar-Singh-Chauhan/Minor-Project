@@ -1,89 +1,83 @@
-import './App.css';
+import "./App.css";
+import "./button.css";
 import React, { useRef } from "react";
 import * as tf from "@tensorflow/tfjs";
 import * as bodyPix from "@tensorflow-models/body-pix";
 import Webcam from "react-webcam";
+import { Link, NavLink, NavLinkProps } from "react-router-dom";
+import Footer from "./footer";
+import Button from "./button";
+import Team from "./team";
+import About from "./about";
 
 function App() {
-  const webcamReference = useRef(null);
-  const canvasReference = useRef(null);
-
-  const loadBodyPixModel = async () => {
-    const network = await bodyPix.load();
-    console.log("Body-Pix model loaded.");
-    setInterval(() => {
-      detectBodySegments(network);
-    }, 100);
-  };
-
-  const detectBodySegments = async (network) => {
-      if (
-        typeof webcamReference.current !== "undefined" &&
-        webcamReference.current !== null &&
-        webcamReference.current.video.readyState === 4
-      ) {
-        const video = webcamReference.current.video;
-        const videoWidth = webcamReference.current.video.videoWidth;
-        const videoHeight = webcamReference.current.video.videoHeight;
-
-        webcamReference.current.video.width = videoWidth;
-        webcamReference.current.video.height = videoHeight;
-
-        canvasReference.current.width = videoWidth;
-        canvasReference.current.height = videoHeight;
-
-        const body = await network.segmentPersonParts(video);
-        console.log(body);
-
-        const coloredBodyParts = bodyPix.toColoredPartMask(body);
-        const opacityValue = 0.7;
-        const flipHorizontal = false;
-        const maskBlurDensity = 0;
-        const canvas = canvasReference.current;
-
-        bodyPix.drawMask(
-          canvas,
-          video,
-          coloredBodyParts,
-          opacityValue,
-          maskBlurDensity,
-          flipHorizontal
-        );
-      }
-  };
-
-  loadBodyPixModel();
   return (
-      <div className="App">
-        <Webcam
-          ref={webcamReference}
-          style={{
-            position: "absolute",
-            marginLeft: "auto",
-            marginRight: "auto",
-            left: 0,
-            right: 0,
-            textAlign: "center",
-            zindex: 9,
-            width: 720,
-            height: 500,
-          }}
-        />
-        <canvas
-          ref={canvasReference}
-          style={{
-            position: "absolute",
-            marginLeft: "auto",
-            marginRight: "auto",
-            left: 0,
-            right: 0,
-            textAlign: "center",
-            zindex: 9,
-            width: 720,
-            height: 500,
-          }}
-        />
-    </div>
+    <>
+      <section class="header">
+        <div class="overlay">
+          <div class="row">
+            <div class="navbar navbar-default">
+              <div class="container-fluid">
+                <div class="navbar-header">
+                  <button
+                    type="button"
+                    class="navbar-toggle collapsed"
+                    data-toggle="collapse"
+                    data-target="#bs-example-navbar-collapse-1"
+                    aria-expanded="false"
+                  >
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                  </button>
+                  <div class="navlogo col-lg-2">
+                    <a class="navbar-brand" href="#">
+                      BodyPix
+                    </a>
+                  </div>
+                </div>
+
+                <div
+                  class="collapse navbar-collapse"
+                  id="bs-example-navbar-collapse-1"
+                >
+                  <div class="col-lg-8">
+                    <ul class="nav navbar-nav nav-links">
+                      <li>
+                        <Link to="/segmentation">Perform Segmentation</Link>
+                      </li>
+                      <li>
+                        <a href="#about">About</a>
+                      </li>
+                      <li>
+                        <a href="#team">Team</a>
+                      </li>
+                      
+                      <li>
+                        <a
+                          href="https://github.com/Kshitij-Kumar-Singh-Chauhan/Minor-Project"
+                          class="fa fa-github" 
+                          aria-hidden="true"
+                        ></a>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <div id="about">
+        <About />
+      </div>
+      <div id="team">
+        <Team />
+      </div>
+
+      <Footer />
+    </>
   );
 }
 
